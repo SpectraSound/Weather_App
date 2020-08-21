@@ -39,18 +39,18 @@ function HomeScreen({ navigation, cities, setCities }) {
         if(newList){
             try {
                 await AsyncStorage.setItem('city_list', JSON.stringify(newList));
-                console.log(newList)
+                
             } catch (error) {
                 // Error saving data
-                console.log("can't save")
+                
             }
         } else {
             try {
                 await AsyncStorage.setItem('city_list', JSON.stringify(cities));
-                console.log(cities)
+                
             } catch (error) {
                 // Error saving data
-                console.log("can't save")
+                
             }
         }
 
@@ -63,21 +63,23 @@ function HomeScreen({ navigation, cities, setCities }) {
             if (value !== null) {
                 // Our data is fetched successfully
                 setCities(JSON.parse(value))
-                console.log(value);
+                
             }
         } catch (error) {
             // Error retrieving data
-            console.log("no data")
+            
         }
     }
 
-
+    //fetchWeather creates the api call and fetches the response
     const fetchWeather = (lat, lon) => {
         var call = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`
 
         if (!lon) {
             call = `http://api.openweathermap.org/data/2.5/forecast?q=${lat}&appid=${API_KEY}&units=metric`
         }
+
+        //fetches response and uses hooks to save the json data we need
         fetch(call
         )
             .then(res => res.json())
@@ -101,13 +103,14 @@ function HomeScreen({ navigation, cities, setCities }) {
             });
     }
 
+    //removes city with the same name as the one pressed and saves the new list to cities
     const removeCity = (city) => {
         var temp_arr = cities.filter(x => x !== city)
         setCities(temp_arr)
-        console.log(temp_arr)
         _storeData(temp_arr)
     }
 
+    //runs once when the homepage loads fetches weather for current position and retrieves prior saved data
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
             position => {
@@ -117,13 +120,16 @@ function HomeScreen({ navigation, cities, setCities }) {
         );
     }, []);
 
+    //The view that is rendered 
     return (
         <View style={styles.container}>
             {loading ?
                 (<Text>Fetching Weather</Text>)
                 :
                 (<>
+                {/* Creates swiping pages for the forecast  */}
                     <ViewPager style={styles.container} initialPage={0} orientation={"horizontal"}>
+                        
                         {forecast.map((day, index) => {
                             var date = new Date(day.dt * 1000).toLocaleString("da-DK", {
                                 weekday: "short",
@@ -139,8 +145,9 @@ function HomeScreen({ navigation, cities, setCities }) {
                             </View>)
                         })}
                     </ViewPager>
-
+                        
                     <View style={styles.saved_cities_container}>
+                        {/** button for weather in current location */}
                         <TouchableOpacity style={styles.button} onPress={() => {
                             getPosition();
                             fetchWeather(currentPosition.latitude, currentPosition.longitude);
@@ -148,6 +155,7 @@ function HomeScreen({ navigation, cities, setCities }) {
                             <Text style={styles.text}>Your Location</Text>
                         </TouchableOpacity>
                         <View>
+                            {/** maps list of cities and creates a button for each city */}
                             {cities.map((city, index) => {
 
                                 return (
@@ -165,9 +173,9 @@ function HomeScreen({ navigation, cities, setCities }) {
                                 )
                             })}
                         </View>
-
+                            {/**button to go to Search page */}
                         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Search')}>
-
+                            <Text style={styles.text}>Find Cities</Text>
                         </TouchableOpacity>
                     </View>
                 </>)

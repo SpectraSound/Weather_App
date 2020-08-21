@@ -11,6 +11,7 @@ import { createStackNavigator, StackView } from '@react-navigation/stack';
 
 const App = () => {
 
+  //hook to update and use city list between navigation pages as a property
   const [cities, setCities] = useState([]);
 
 

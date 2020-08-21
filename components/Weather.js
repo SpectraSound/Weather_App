@@ -5,6 +5,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import { weatherConditions } from '../utility/WeatherConditions';
 
+
+//weather component properties are sent from HomeScreen
 export const Weather = ({ weather, temperature, city, time }) => {
   return (
     <View
@@ -39,9 +41,6 @@ Weather.propTypes = {
   city: PropTypes.string
 };
 
-export const Weather_Forecast = ({}) => {
-
-};
 
 const styles = StyleSheet.create({
   weatherContainer: {

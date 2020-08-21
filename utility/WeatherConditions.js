@@ -1,4 +1,5 @@
 
+// Used in Weather.js to display different themes and flavor texts
 export const weatherConditions = {
 	Rain: {
 		color: '#005BEA',

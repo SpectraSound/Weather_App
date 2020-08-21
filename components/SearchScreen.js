@@ -17,7 +17,7 @@ function SearchScreen({setCities, cities, navigation}){
     const [value,onTextChange] = useState({});
 
 
-
+    // Fetchweather to see if city exists
     const fetchWeather = (city) => {
 
         fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
@@ -36,32 +36,30 @@ function SearchScreen({setCities, cities, navigation}){
                 setData(temp_data)
                 setLoading(false)
             }
-
-            
         );
     }
 
 
     
     return(
-      <View>
+      <View style={styles.container}>
             <View>
                 <TextInput
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} 
+                    style={styles.textInput} 
                     placeholder="Search for city" 
                     onChangeText={text => onTextChange(text)} 
                     
                 />
-                <TouchableOpacity onPress={() => 
+                <TouchableOpacity style={styles.button} onPress={() => 
                     {
                         fetchWeather(value)
                         
                     }}>
-                    <Text>Search</Text>
+                    <Text style={styles.text}>Search</Text>
                 </TouchableOpacity>
                 {!loading ? 
                     
-                    (<TouchableOpacity style={styles.button}>
+                    (<TouchableOpacity>
                        <Text>{data.city}</Text>
                     </TouchableOpacity>)
                     :
@@ -76,11 +74,25 @@ function SearchScreen({setCities, cities, navigation}){
 
 const styles = StyleSheet.create({
     button:{
-        flex: 1,
-        backgroundColor: "grey",
+        
+        backgroundColor: "blue",
         height: 40,
         justifyContent: "center"
     },
+    container: {
+        flex: 1,
+        justifyContent: "space-between"
+    },
+    textInput: { 
+        height: 40, 
+        borderColor: 'gray', 
+        borderWidth: 1 
+    },
+    text: {
+        fontSize: 20,
+        padding: 10,
+        alignSelf: "center"
+    }
 })
 
 export default SearchScreen;
