@@ -1,21 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import HomeScreen from './components/HomeScreen';
+import SearchScreen from './components/SearchScreen';
+import { NavigationContainer, useLinkProps } from '@react-navigation/native';
+import { createStackNavigator, StackView } from '@react-navigation/stack';
 
-export default function App() {
+
+
+
+const App = () => {
+  const [cities,setCities] = useState([]);
+
+  const Stack = createStackNavigator();
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" options={{headerTitleAlign:"center"}}>
+          {props => <HomeScreen {...props} cities={cities} setCities={setCities}/>}
+        </Stack.Screen>
+        <Stack.Screen name="Search" options={{headerTitleAlign:"center"}}>
+          {props => <SearchScreen {...props} setCities={setCities} cities={cities}/>}
+        </Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+export default App;
