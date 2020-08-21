@@ -10,16 +10,18 @@ import { createStackNavigator, StackView } from '@react-navigation/stack';
 
 
 const App = () => {
-  const [cities,setCities] = useState([]);
+
+  const [cities, setCities] = useState([]);
+
 
   const Stack = createStackNavigator();
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" options={{headerTitleAlign:"center"}}>
+        <Stack.Screen name="Home" options={{ headerTitleAlign: "center" }}>
           {props => <HomeScreen {...props} cities={cities} setCities={setCities}/>}
         </Stack.Screen>
-        <Stack.Screen name="Search" options={{headerTitleAlign:"center"}}>
+        <Stack.Screen name="Search" options={{ headerTitleAlign: "center" }}>
           {props => <SearchScreen {...props} setCities={setCities} cities={cities}/>}
         </Stack.Screen>
       </Stack.Navigator>

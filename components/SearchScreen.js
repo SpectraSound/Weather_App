@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput, Button, AsyncStorage } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { API_KEY } from '../utility/WeatherApiKey';
 import Weather from './Weather';
@@ -16,6 +16,8 @@ function SearchScreen({setCities, cities, navigation}){
 
     const [value,onTextChange] = useState({});
 
+
+
     const fetchWeather = (city) => {
 
         fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
@@ -23,7 +25,7 @@ function SearchScreen({setCities, cities, navigation}){
 
             .then(res => res.json())
             .then(json => {
-                console.log(json)
+                
                 var temp_data = {
                     city: json.name,
                     temperature: json.main.temp,
@@ -38,6 +40,8 @@ function SearchScreen({setCities, cities, navigation}){
             
         );
     }
+
+
     
     return(
       <View>
@@ -51,6 +55,7 @@ function SearchScreen({setCities, cities, navigation}){
                 <TouchableOpacity onPress={() => 
                     {
                         fetchWeather(value)
+                        
                     }}>
                     <Text>Search</Text>
                 </TouchableOpacity>

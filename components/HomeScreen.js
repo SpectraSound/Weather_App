@@ -1,9 +1,10 @@
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Button, AsyncStorage } from 'react-native';
 import Weather from './Weather';
 import { API_KEY } from '../utility/WeatherApiKey';
 import ViewPager from '@react-native-community/viewpager';
+
 
 
 function HomeScreen({ navigation, cities, setCities }) {
@@ -31,15 +32,44 @@ function HomeScreen({ navigation, cities, setCities }) {
         });
     };
 
+
     // create a function that saves your data asyncronously
-    _storeData = async () => {
-        try {
-            await AsyncStorage.setItem('name', 'John');
-        } catch (error) {
-            // Error saving data
+    _storeData = async (newList) => {
+        
+        if(newList){
+            try {
+                await AsyncStorage.setItem('city_list', JSON.stringify(newList));
+                console.log(newList)
+            } catch (error) {
+                // Error saving data
+                console.log("can't save")
+            }
+        } else {
+            try {
+                await AsyncStorage.setItem('city_list', JSON.stringify(cities));
+                console.log(cities)
+            } catch (error) {
+                // Error saving data
+                console.log("can't save")
+            }
         }
+
     }
 
+    // fetch the data back asyncronously
+    _retrieveData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('city_list');
+            if (value !== null) {
+                // Our data is fetched successfully
+                setCities(JSON.parse(value))
+                console.log(value);
+            }
+        } catch (error) {
+            // Error retrieving data
+            console.log("no data")
+        }
+    }
 
 
     const fetchWeather = (lat, lon) => {
@@ -67,26 +97,22 @@ function HomeScreen({ navigation, cities, setCities }) {
                 setForecast(correct);
                 setData(temp_data);
                 setLoading(false);
-
+                _storeData()
             });
+    }
+
+    const removeCity = (city) => {
+        var temp_arr = cities.filter(x => x !== city)
+        setCities(temp_arr)
+        console.log(temp_arr)
+        _storeData(temp_arr)
     }
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
             position => {
                 fetchWeather(position.coords.latitude, position.coords.longitude);
-                    // fetch the data back asyncronously
-                _retrieveData = async () => {
-                    try {
-                        const value = await AsyncStorage.getItem('name');
-                        if (value !== null) {
-                            // Our data is fetched successfully
-                            console.log(value);
-                        }
-                    } catch (error) {
-                        // Error retrieving data
-                    }
-                }
+                _retrieveData()
             },
         );
     }, []);
@@ -124,22 +150,22 @@ function HomeScreen({ navigation, cities, setCities }) {
                         <View>
                             {cities.map((city, index) => {
 
-                            return (
-                                
-                                <TouchableOpacity key={index} style={styles.button} onPress={() => {
-                                    fetchWeather(city)
-                                }}>
-                                    <Text style={styles.text}>{city}</Text>
-                                    <TouchableOpacity title="X" onPress={() => {
-                                        setCities(cities.filter(x => x !== city))                                        
+                                return (
+
+                                    <TouchableOpacity key={index} style={styles.button} onPress={() => {
+                                        fetchWeather(city)
                                     }}>
-                                        <Text style={styles.text}>X</Text>
+                                        <Text style={styles.text}>{city}</Text>
+                                        <TouchableOpacity title="X" onPress={() => {
+                                            removeCity(city)
+                                        }}>
+                                            <Text style={styles.text}>X</Text>
+                                        </TouchableOpacity>
                                     </TouchableOpacity>
-                                </TouchableOpacity>
-                            )
+                                )
                             })}
                         </View>
-                        
+
                         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Search')}>
 
                         </TouchableOpacity>
